@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 29
+        versionCode 32
+        versionName "2.1.1"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets { main { java.srcDirs = ['src/main/java'] } }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.1.0'
+}
+
+build  {
+    def jarName = "JsBridge-$android.defaultConfig.versionName\\.jar"
+    copy {
+        from('build/intermediates/bundles/release/')
+        into("$rootDir/jars/")
+        include('classes.jar')
+        rename('classes.jar', jarName)
+    }
+    println ">> copy classes.jar"
+}
+
+apply from: "./bintrayUpload.gradle"
